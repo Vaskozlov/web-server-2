@@ -26,16 +26,13 @@ public class Main {
         rootNode.put("isInArea", AreaChecker.isInArea(x, y, r));
         rootNode.put("executionTimeMS", end - begin);
 
-        String generatedJson = objectMapper.writeValueAsString(rootNode);
-
-        return """
-                 HTTP/1.1 200 OK
-                 Content-Type: text/html
-                 Content-Length: %d
-                
-                
-                %s
-                """.formatted(generatedJson.getBytes(StandardCharsets.UTF_8).length, generatedJson);
+        return new HttpResponse(
+                HttpVersion.HTTP_1_1,
+                200,
+                "OK",
+                "text/html",
+                objectMapper.writeValueAsString(rootNode)
+        ).toString();
     }
 
     private static String readRequestBody() throws IOException {

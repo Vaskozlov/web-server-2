@@ -17,7 +17,8 @@ public record HttpResponse(
                 Content-Length: %d
                 
                 
-                %s""".formatted(
+                %s
+                """.formatted(
                 version.toString(),
                 statusCode,
                 statusMessage,
