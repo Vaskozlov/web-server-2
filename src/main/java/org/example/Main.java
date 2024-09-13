@@ -26,13 +26,17 @@ public class Main {
         rootNode.put("isInArea", AreaChecker.isInArea(x, y, r));
         rootNode.put("executionTimeMS", end - begin);
 
-        return new HttpResponse(
-                HttpVersion.HTTP_1_1,
-                200,
-                "OK",
-                "text/html",
-                objectMapper.writeValueAsString(rootNode)
-        ).toString();
+        String generatedJson = objectMapper.writeValueAsString(rootNode);
+
+        return """
+                HTTP/1.1 200 OK
+                Content-Type: text/html
+                Content-Length: %d
+                
+                
+                %s
+                """.formatted(generatedJson.getBytes(StandardCharsets.UTF_8).length, generatedJson);
+
     }
 
     private static String readRequestBody() throws IOException {
@@ -49,10 +53,15 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        var fcgiInterface = new FCGIInterface();
 
-        while (fcgiInterface.FCGIaccept() >= 0) {
-            System.out.println(formResponse(readRequestBody()));
-        }
+
+        System.out.println(formResponse("""
+                {
+                    "x": 0,
+                    "y": 0,
+                    "r": 1
+                }
+                """));
+
     }
 }
