@@ -12,9 +12,9 @@ public record HttpResponse(
     @Override
     public String toString() {
         return """
-                %s %d %s
-                Content-Type: %s
-                Content-Length: %d
+                 %s %d %s
+                 Content-Type: %s
+                 Content-Length: %d
                 
                 
                 %s
