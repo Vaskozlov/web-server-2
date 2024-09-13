@@ -20,11 +20,13 @@ repositories {
 
 application {
     mainClass.set("org.example.Main")
+    applicationDefaultJvmArgs = listOf("-DFCGI_PORT=24226")
 }
 
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(17)
 }
