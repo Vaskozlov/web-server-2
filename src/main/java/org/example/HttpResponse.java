@@ -1,0 +1,29 @@
+package org.example;
+
+import java.nio.charset.StandardCharsets;
+
+public record HttpResponse(
+        HttpVersion version,
+        int statusCode,
+        String statusMessage,
+        String contentType,
+        String content
+) {
+    @Override
+    public String toString() {
+        return """
+                %s %d %s
+                Content-Type: %s
+                Content-Length: %d
+                
+                
+                %s""".formatted(
+                version,
+                statusCode,
+                statusMessage,
+                contentType,
+                content.getBytes(StandardCharsets.UTF_8).length,
+                content
+        );
+    }
+}
