@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class Main {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static HttpResponse formResponse(String content) throws JsonProcessingException {
+    private static String formResponse(String content) throws JsonProcessingException {
         long begin = System.currentTimeMillis();
         JsonNode tree = objectMapper.readTree(content);
         double x = tree.get("x").asDouble();
@@ -26,13 +26,16 @@ public class Main {
         rootNode.put("isInArea", AreaChecker.isInArea(x, y, r));
         rootNode.put("executionTimeMS", end - begin);
 
-        return new HttpResponse(
-                HttpVersion.HTTP_1_1,
-                200,
-                "OK",
-                "application/json; charset=utf-8",
-                objectMapper.writeValueAsString(rootNode)
-        );
+        String generatedJson = objectMapper.writeValueAsString(rootNode);
+
+        return """
+                 HTTP/1.1 200 OK
+                 Content-Type: text/html
+                 Content-Length: %d
+                
+                
+                %s
+                """.formatted(generatedJson.getBytes(StandardCharsets.UTF_8).length, generatedJson);
     }
 
     private static String readRequestBody() throws IOException {
