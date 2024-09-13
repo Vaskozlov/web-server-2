@@ -36,7 +36,6 @@ public class Main {
                 
                 %s
                 """.formatted(generatedJson.getBytes(StandardCharsets.UTF_8).length, generatedJson);
-
     }
 
     private static String readRequestBody() throws IOException {
@@ -53,15 +52,10 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
+        var fcgiInterface = new FCGIInterface();
 
-
-        System.out.println(formResponse("""
-                {
-                    "x": 0,
-                    "y": 0,
-                    "r": 1
-                }
-                """));
-
+        while (fcgiInterface.FCGIaccept() >= 0) {
+            System.out.println(formResponse(readRequestBody()));
+        }
     }
 }
