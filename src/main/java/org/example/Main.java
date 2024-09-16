@@ -59,8 +59,12 @@ public class Main {
         }
     }
 
-    private static HttpResponse successResponse(boolean isInArea, long executionTimeMS) {
+    private static HttpResponse successResponse(UserData data, boolean isInArea, long executionTimeMS) {
         ObjectNode rootNode = objectMapper.createObjectNode();
+
+        rootNode.put("x", data.x);
+        rootNode.put("y", data.y);
+        rootNode.put("r", data.r);
         rootNode.put("isInArea", isInArea);
         rootNode.put("executionTimeMS", executionTimeMS);
 
@@ -91,7 +95,7 @@ public class Main {
 
         long end = System.currentTimeMillis();
 
-        return successResponse(isInArea, end - begin);
+        return successResponse(userData, isInArea, end - begin);
     }
 
     private static String readRequestBody() throws IOException {
