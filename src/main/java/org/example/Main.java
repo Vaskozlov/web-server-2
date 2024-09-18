@@ -59,14 +59,14 @@ public class Main {
         }
     }
 
-    private static HttpResponse successResponse(UserData data, boolean isInArea, long executionTimeMS) {
+    private static HttpResponse successResponse(UserData data, boolean isInArea, long executionTimeNS) {
         ObjectNode rootNode = objectMapper.createObjectNode();
 
         rootNode.put("x", data.x);
         rootNode.put("y", data.y);
         rootNode.put("r", data.r);
         rootNode.put("isInArea", isInArea);
-        rootNode.put("executionTimeMS", executionTimeMS);
+        rootNode.put("executionTimeNS", executionTimeNS);
 
         try {
             return new HttpResponse(
@@ -82,7 +82,7 @@ public class Main {
     }
 
     private static HttpResponse formResponse(String content) {
-        long begin = System.currentTimeMillis();
+        long begin = System.nanoTime();
 
         Result<UserData, Exception> validationResult = validateRequest(content);
 
@@ -93,7 +93,7 @@ public class Main {
         UserData userData = validationResult.getValue();
         boolean isInArea = AreaChecker.isInArea(userData.x, userData.y, userData.r);
 
-        long end = System.currentTimeMillis();
+        long end = System.nanoTime();
 
         return successResponse(userData, isInArea, end - begin);
     }
