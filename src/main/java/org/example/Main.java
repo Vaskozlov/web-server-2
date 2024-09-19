@@ -46,17 +46,13 @@ public class Main {
     }
 
     private static HttpResponse errorResponse(ValidationError error) {
-        ObjectNode rootNode = objectMapper.createObjectNode();
-        rootNode.put("value", error.value);
-        rootNode.put("message", error.message);
-
         try {
             return new HttpResponse(
                     HttpVersion.HTTP_1_1,
                     400,
                     "Bad Request",
                     "application/json",
-                    objectMapper.writeValueAsString(rootNode)
+                    objectMapper.writeValueAsString(error)
             );
         } catch (JsonProcessingException jsonProcessingException) {
             throw new IllegalStateException("Failed to serialize error response", jsonProcessingException);
