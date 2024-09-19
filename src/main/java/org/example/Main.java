@@ -10,27 +10,30 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class Main {
+    private record ValidationError(String value, String message) {
+    }
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final double[] availableRValues = {1.0, 1.5, 2, 2.5, 3.0};
 
     record UserData(double x, double y, double r) {
     }
 
-    private static Result<UserData, Exception> validateRequest(String content) {
+    private static Result<UserData, ValidationError> validateRequest(String content) {
         UserData userData;
 
         try {
             userData = objectMapper.readValue(content, UserData.class);
         } catch (JsonProcessingException e) {
-            return Result.error(e);
+            return Result.error(new ValidationError("json", e.getMessage()));
         }
 
         if (Math.abs(userData.x) > 3) {
-            return Result.error(new IllegalArgumentException("x must be in range [-3, 3]"));
+            return Result.error(new ValidationError("x", "x must be in range [-3, 3]"));
         }
 
         if (Math.abs(userData.y) > 5) {
-            return Result.error(new IllegalArgumentException("y must be in range [-5, 5]"));
+            return Result.error(new ValidationError("y", "y must be in range [-5, 5]"));
         }
 
         for (double r : availableRValues) {
@@ -39,12 +42,13 @@ public class Main {
             }
         }
 
-        return Result.error(new IllegalArgumentException("r must be in [1.0, 1.5, 2.0, 2.5, 3.0]"));
+        return Result.error(new ValidationError("r", "r must be in [1.0, 1.5, 2.0, 2.5, 3.0]"));
     }
 
-    private static HttpResponse errorResponse(Exception e) {
+    private static HttpResponse errorResponse(ValidationError error) {
         ObjectNode rootNode = objectMapper.createObjectNode();
-        rootNode.put("error", e.getMessage());
+        rootNode.put("value", error.value);
+        rootNode.put("message", error.message);
 
         try {
             return new HttpResponse(
@@ -84,7 +88,7 @@ public class Main {
     private static HttpResponse formResponse(String content) {
         long begin = System.nanoTime();
 
-        Result<UserData, Exception> validationResult = validateRequest(content);
+        Result<UserData, ValidationError> validationResult = validateRequest(content);
 
         if (validationResult.isError()) {
             return errorResponse(validationResult.getError());
@@ -100,6 +104,8 @@ public class Main {
 
     private static String readRequestBody() throws IOException {
         FCGIInterface.request.inStream.fill();
+
+        // todo: add type check
 
         var contentLength = FCGIInterface.request.inStream.available();
         var buffer = ByteBuffer.allocate(contentLength);
