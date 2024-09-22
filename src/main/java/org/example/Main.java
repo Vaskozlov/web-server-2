@@ -25,7 +25,7 @@ public class Main {
         try {
             userData = objectMapper.readValue(content, UserData.class);
         } catch (JsonProcessingException e) {
-            return Result.error(new ValidationError("json", e.getMessage()));
+            return Result.error(new ValidationError("json", "%s %s".formatted(content, e.getMessage())));
         }
 
         if (Math.abs(userData.x) > 3) {
