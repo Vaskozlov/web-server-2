@@ -103,11 +103,8 @@ public class Main {
     }
 
     private static String readRequestBody() throws IOException, BadRequest {
-        if (!FCGIInterface.request.params.get("REQUEST_METHOD").equals("POST")) {
-            throw new BadRequest("POST method expected");
-        }
-
         var contentLength = FCGIInterface.request.inStream.available();
+
         var buffer = ByteBuffer.allocate(contentLength);
         var readBytes =
                 FCGIInterface.request.inStream.read(buffer.array(), 0,
@@ -116,6 +113,10 @@ public class Main {
         var requestBodyRaw = new byte[readBytes];
         buffer.get(requestBodyRaw);
         buffer.clear();
+
+        if (!FCGIInterface.request.params.get("REQUEST_METHOD").equals("POST")) {
+            throw new BadRequest("POST method expected");
+        }
 
         return new String(requestBodyRaw, StandardCharsets.UTF_8);
     }
