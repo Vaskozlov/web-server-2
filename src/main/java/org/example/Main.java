@@ -25,7 +25,7 @@ public class Main {
         try {
             userData = objectMapper.readValue(content, UserData.class);
         } catch (JsonProcessingException e) {
-            return Result.error(new ValidationError("json", "%s %s".formatted(content, e.getMessage())));
+            return Result.error(new ValidationError("json", e.getMessage()));
         }
 
         if (Math.abs(userData.x) > 3) {
@@ -102,7 +102,8 @@ public class Main {
         return successResponse(userData, isInArea, end - begin);
     }
 
-    private static String readRequestBody() throws IOException {
+    private static String readRequestBody() throws IOException, BadRequest {
+        FCGIInterface.request.inStream.fill();
         var contentLength = FCGIInterface.request.inStream.available();
 
         var buffer = ByteBuffer.allocate(contentLength);
@@ -114,6 +115,10 @@ public class Main {
         buffer.get(requestBodyRaw);
         buffer.clear();
 
+        if (!FCGIInterface.request.params.get("REQUEST_METHOD").equals("POST")) {
+            throw new BadRequest("POST method expected");
+        }
+
         return new String(requestBodyRaw, StandardCharsets.UTF_8);
     }
 
@@ -121,7 +126,11 @@ public class Main {
         var fcgiInterface = new FCGIInterface();
 
         while (fcgiInterface.FCGIaccept() >= 0) {
-            System.out.println(formResponse(readRequestBody()));
+            try {
+                System.out.println(formResponse(readRequestBody()));
+            } catch (BadRequest badRequest) {
+                System.out.println(formBadResponse(badRequest.getMessage()));
+            }
         }
     }
 }
