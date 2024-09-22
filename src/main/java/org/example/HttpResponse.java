@@ -25,7 +25,7 @@ public record HttpResponse(
                 statusCode,
                 statusMessage,
                 contentType,
-                content.getBytes(StandardCharsets.UTF_8).length,
+                content.getBytes(StandardCharsets.UTF_8).length + 1,
                 content
         );
     }
