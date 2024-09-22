@@ -13,11 +13,11 @@ public class Main {
     private record ValidationError(String value, String message) {
     }
 
+    private record UserData(double x, double y, double r) {
+    }
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final double[] availableRValues = {1.0, 1.5, 2, 2.5, 3.0};
-
-    record UserData(double x, double y, double r) {
-    }
 
     private static Result<UserData, ValidationError> validateRequest(String content) {
         UserData userData;
@@ -59,6 +59,10 @@ public class Main {
         }
     }
 
+    private static HttpResponse formBadResponse(String content) {
+        return errorResponse(new ValidationError("bad response", content));
+    }
+
     private static HttpResponse successResponse(UserData data, boolean isInArea, long executionTimeNS) {
         ObjectNode rootNode = objectMapper.createObjectNode();
 
@@ -98,10 +102,10 @@ public class Main {
         return successResponse(userData, isInArea, end - begin);
     }
 
-    private static String readRequestBody() throws IOException {
-        FCGIInterface.request.inStream.fill();
-
-        // todo: add type check
+    private static String readRequestBody() throws IOException, BadRequest {
+        if (!FCGIInterface.request.params.get("REQUEST_METHOD").equals("POST")) {
+            throw new BadRequest("POST method expected");
+        }
 
         var contentLength = FCGIInterface.request.inStream.available();
         var buffer = ByteBuffer.allocate(contentLength);
@@ -120,7 +124,11 @@ public class Main {
         var fcgiInterface = new FCGIInterface();
 
         while (fcgiInterface.FCGIaccept() >= 0) {
-            System.out.println(formResponse(readRequestBody()));
+            try {
+                System.out.println(formResponse(readRequestBody()));
+            } catch (BadRequest badRequest) {
+                System.out.println(formBadResponse(badRequest.getMessage()));
+            }
         }
     }
 }
