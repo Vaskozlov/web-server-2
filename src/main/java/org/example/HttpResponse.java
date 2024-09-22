@@ -19,7 +19,6 @@ public record HttpResponse(
                 
                 %s
                 
-                
                 """.formatted(
                 version.toString(),
                 statusCode,

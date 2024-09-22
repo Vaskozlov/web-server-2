@@ -48,7 +48,7 @@ public class Main {
     private static HttpResponse errorResponse(ValidationError error) {
         try {
             return new HttpResponse(
-                    HttpVersion.HTTP_1_1,
+                    HttpVersion.HTTP_2_0,
                     400,
                     "Bad Request",
                     "application/json",
@@ -74,7 +74,7 @@ public class Main {
 
         try {
             return new HttpResponse(
-                    HttpVersion.HTTP_1_1,
+                    HttpVersion.HTTP_2_0,
                     200,
                     "OK",
                     "application/json",
