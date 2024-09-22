@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("application")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("jvm")
 }
 
@@ -25,6 +26,11 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    archiveFileName.set("server.jar")
+    configurations = listOf(project.configurations.runtimeClasspath.get())
 }
 
 kotlin {
