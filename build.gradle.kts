@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("application")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.2"
     kotlin("jvm")
 }
 
@@ -21,7 +21,6 @@ repositories {
 
 application {
     mainClass.set("org.example.Main")
-    applicationDefaultJvmArgs = listOf("-DFCGI_PORT=24226")
 }
 
 tasks.test {
@@ -34,5 +33,5 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
