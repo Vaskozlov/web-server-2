@@ -37,8 +37,8 @@ public class Main {
         final double xAbsoluteValue = Math.abs(userData.x);
         final double yAbsoluteValue = Math.abs(userData.y);
 
-        xRepresentation = "0" + xRepresentation.replaceFirst("[^.,]", "");
-        yRepresentation = "0" + yRepresentation.replaceFirst("[^.,]", "");
+        xRepresentation = "0" + xRepresentation.replaceFirst("[^.,]*", "");
+        yRepresentation = "0" + yRepresentation.replaceFirst("[^.,]*", "");
 
         if (xAbsoluteValue > 3 || (xAbsoluteValue == 3 && Math.abs(Double.parseDouble(xRepresentation)) > 0.0)) {
             return Result.error(new ValidationError("x", "x must be in range [-3, 3]"));
