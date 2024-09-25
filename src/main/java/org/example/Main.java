@@ -17,6 +17,7 @@ public class Main {
     private record UserData(double x, double y, double r) {
     }
 
+    static final double DoubleComparisonError = 1e-9;
     static final Gson gson = new GsonBuilder().create();
 
     private static final double[] availableRValues = {1.0, 1.5, 2, 2.5, 3.0};
@@ -48,7 +49,7 @@ public class Main {
         }
 
         for (double r : availableRValues) {
-            if (Math.abs(userData.r - r) < 1e-9) {
+            if (Math.abs(userData.r - r) < DoubleComparisonError) {
                 return Result.ok(new UserData(userData.x, userData.y, r));
             }
         }
@@ -67,7 +68,7 @@ public class Main {
     }
 
     private static HttpResponse formBadResponse(String content) {
-        return errorResponse(new ValidationError("bad response", content));
+        return errorResponse(new ValidationError("bad request", content));
     }
 
     private static HttpResponse successResponse(UserData data, boolean isInArea, long executionTimeNS) {
@@ -88,7 +89,7 @@ public class Main {
                     gson.toJson(jsonObject)
             );
         } catch (JsonSyntaxException jsonProcessingException) {
-            throw new IllegalStateException("Failed to serialize error response", jsonProcessingException);
+            throw new IllegalStateException("Failed to serialize object to json", jsonProcessingException);
         }
     }
 
