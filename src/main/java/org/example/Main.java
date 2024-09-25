@@ -37,11 +37,11 @@ public class Main {
         final double xAbsoluteValue = Math.abs(userData.x);
         final double yAbsoluteValue = Math.abs(userData.y);
 
-        if (xAbsoluteValue > 3 || xRepresentation.matches("[+-]?3([.]0*[1-9]+0*)?")) {
+        if (xAbsoluteValue > 3 || xRepresentation.matches("[+-]?3[.]0*[1-9]+0*")) {
             return Result.error(new ValidationError("x", "x must be in range [-3, 3]"));
         }
 
-        if (yAbsoluteValue > 5 || yRepresentation.matches("[+-]?5([.]0*[1-9]+0*)?")) {
+        if (yAbsoluteValue > 5 || yRepresentation.matches("[+-]?5[.]0*[1-9]+0*")) {
             return Result.error(new ValidationError("y", "y must be in range [-5, 5]"));
         }
 
