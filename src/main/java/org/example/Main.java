@@ -40,11 +40,11 @@ public class Main {
         xRepresentation = "0" + xRepresentation.substring(1);
         yRepresentation = "0" + yRepresentation.substring(1);
 
-        if (xAbsoluteValue > 3 || (xAbsoluteValue == 3 && Double.parseDouble(xRepresentation) > 0.0)) {
+        if (xAbsoluteValue > 3 || (xAbsoluteValue == 3 && Math.abs(Double.parseDouble(xRepresentation)) > 0.0)) {
             return Result.error(new ValidationError("x", "x must be in range [-3, 3]"));
         }
 
-        if (Math.abs(userData.y) > 5 || (yAbsoluteValue == 5 && Double.parseDouble(yRepresentation) > 0.0)) {
+        if (yAbsoluteValue > 5 || (yAbsoluteValue == 5 && Math.abs(Double.parseDouble(yRepresentation)) > 0.0)) {
             return Result.error(new ValidationError("y", "y must be in range [-5, 5]"));
         }
 
