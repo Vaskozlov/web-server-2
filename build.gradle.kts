@@ -10,8 +10,7 @@ version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(files("src/main/resources/libs/fastcgi-lib.jar"))
-    implementation("com.fasterxml.jackson.core:jackson-core:2.17.2")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation(kotlin("stdlib-jdk8"))
 }
 

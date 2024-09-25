@@ -1,10 +1,10 @@
 package org.example;
 
 import com.fastcgi.FCGIInterface;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -17,7 +17,8 @@ public class Main {
     private record UserData(double x, double y, double r) {
     }
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    static final Gson gson = new GsonBuilder().create();
+
     private static final double[] availableRValues = {1.0, 1.5, 2, 2.5, 3.0};
 
     private static Result<UserData, ValidationError> validateRequest(String content) {
@@ -26,11 +27,12 @@ public class Main {
         String yRepresentation;
 
         try {
-            JsonNode rootNode = objectMapper.readTree(content);
-            xRepresentation = rootNode.get("x").asText();
-            yRepresentation = rootNode.get("y").asText();
-            userData = objectMapper.readValue(content, UserData.class);
-        } catch (JsonProcessingException e) {
+            userData = gson.fromJson(content, UserData.class);
+            JsonObject t = gson.fromJson(content, JsonObject.class);
+
+            xRepresentation = t.get("x").getAsString();
+            yRepresentation = t.get("y").getAsString();
+        } catch (JsonSyntaxException e) {
             return Result.error(new ValidationError("json", e.getMessage()));
         }
 
@@ -55,17 +57,13 @@ public class Main {
     }
 
     private static HttpResponse errorResponse(ValidationError error) {
-        try {
-            return new HttpResponse(
-                    HttpVersion.HTTP_2_0,
-                    400,
-                    "Bad Request",
-                    "application/json",
-                    objectMapper.writeValueAsString(error)
-            );
-        } catch (JsonProcessingException jsonProcessingException) {
-            throw new IllegalStateException("Failed to serialize error response", jsonProcessingException);
-        }
+        return new HttpResponse(
+                HttpVersion.HTTP_2_0,
+                400,
+                "Bad Request",
+                "application/json",
+                gson.toJson(error)
+        );
     }
 
     private static HttpResponse formBadResponse(String content) {
@@ -73,13 +71,13 @@ public class Main {
     }
 
     private static HttpResponse successResponse(UserData data, boolean isInArea, long executionTimeNS) {
-        ObjectNode rootNode = objectMapper.createObjectNode();
+        JsonObject jsonObject = new JsonObject();
 
-        rootNode.put("x", data.x);
-        rootNode.put("y", data.y);
-        rootNode.put("r", data.r);
-        rootNode.put("isInArea", isInArea);
-        rootNode.put("executionTimeNS", executionTimeNS);
+        jsonObject.addProperty("x", data.x);
+        jsonObject.addProperty("y", data.y);
+        jsonObject.addProperty("r", data.r);
+        jsonObject.addProperty("isInArea", isInArea);
+        jsonObject.addProperty("executionTimeNS", executionTimeNS);
 
         try {
             return new HttpResponse(
@@ -87,9 +85,9 @@ public class Main {
                     200,
                     "OK",
                     "application/json",
-                    objectMapper.writeValueAsString(rootNode)
+                    gson.toJson(jsonObject)
             );
-        } catch (JsonProcessingException jsonProcessingException) {
+        } catch (JsonSyntaxException jsonProcessingException) {
             throw new IllegalStateException("Failed to serialize error response", jsonProcessingException);
         }
     }
