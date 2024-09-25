@@ -2,6 +2,7 @@ package org.example;
 
 import com.fastcgi.FCGIInterface;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -21,18 +22,29 @@ public class Main {
 
     private static Result<UserData, ValidationError> validateRequest(String content) {
         UserData userData;
+        String xRepresentation;
+        String yRepresentation;
 
         try {
+            JsonNode rootNode = objectMapper.readTree(content);
+            xRepresentation = rootNode.get("x").asText();
+            yRepresentation = rootNode.get("y").asText();
             userData = objectMapper.readValue(content, UserData.class);
         } catch (JsonProcessingException e) {
             return Result.error(new ValidationError("json", e.getMessage()));
         }
 
-        if (Math.abs(userData.x) > 3) {
+        final double xAbsoluteValue = Math.abs(userData.x);
+        final double yAbsoluteValue = Math.abs(userData.y);
+
+        xRepresentation = xRepresentation.substring(1);
+        yRepresentation = yRepresentation.substring(1);
+
+        if (xAbsoluteValue > 3 || (xAbsoluteValue == 3 && Double.parseDouble(xRepresentation) > 0.0)) {
             return Result.error(new ValidationError("x", "x must be in range [-3, 3]"));
         }
 
-        if (Math.abs(userData.y) > 5) {
+        if (Math.abs(userData.y) > 5 || (yAbsoluteValue == 5 && Double.parseDouble(yRepresentation) > 0.0)) {
             return Result.error(new ValidationError("y", "y must be in range [-5, 5]"));
         }
 
