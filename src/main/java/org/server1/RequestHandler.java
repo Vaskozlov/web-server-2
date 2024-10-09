@@ -31,8 +31,8 @@ public class RequestHandler {
                 jsonObject.addProperty(field.getName(), getDoubleFromObjectField(field, data));
             }
 
-            jsonObject.addProperty("isInArea", isInArea);
-            jsonObject.addProperty("executionTimeNS", executionTimeNS);
+            jsonObject.addProperty("is_in_area", isInArea);
+            jsonObject.addProperty("time_ns", executionTimeNS);
 
             return new HttpResponse(
                     HttpVersion.HTTP_2_0,
