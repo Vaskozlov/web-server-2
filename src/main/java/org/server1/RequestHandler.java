@@ -8,7 +8,7 @@ import static org.server1.Reflect.getDoubleFromObjectField;
 import static org.server1.RequestValidator.gson;
 import static org.server1.RequestValidator.validateRequest;
 
-public class ResponseHandler {
+public class RequestHandler {
     public static HttpResponse errorResponse(int statusCode, ValidationError error) {
         return new HttpResponse(
                 HttpVersion.HTTP_2_0,

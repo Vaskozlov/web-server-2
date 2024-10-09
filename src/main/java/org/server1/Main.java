@@ -32,9 +32,9 @@ public class Main {
 
         while (fcgiInterface.FCGIaccept() >= 0) {
             try {
-                System.out.println(ResponseHandler.formResponse(readRequestBody()));
+                System.out.println(RequestHandler.formResponse(readRequestBody()));
             } catch (BadRequest badRequest) {
-                System.out.println(ResponseHandler.formBadResponse(400, "Bad request", badRequest.getMessage()));
+                System.out.println(RequestHandler.formBadResponse(400, "Bad request", badRequest.getMessage()));
             }
         }
     }
