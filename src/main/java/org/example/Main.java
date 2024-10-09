@@ -27,15 +27,19 @@ public class Main {
     }
 
     private static HttpResponse successResponse(DataFromUser data, boolean isInArea, long executionTimeNS) {
-        JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("x", data.x());
-        jsonObject.addProperty("y", data.y());
-        jsonObject.addProperty("r", data.r());
-        jsonObject.addProperty("isInArea", isInArea);
-        jsonObject.addProperty("executionTimeNS", executionTimeNS);
-
         try {
+            JsonObject jsonObject = new JsonObject();
+
+            for (Field field : data.getClass().getDeclaredFields()) {
+                boolean canAccess = field.canAccess(data);
+                field.setAccessible(true);
+                jsonObject.addProperty(field.getName(), field.getDouble(data));
+                field.setAccessible(canAccess);
+            }
+
+            jsonObject.addProperty("isInArea", isInArea);
+            jsonObject.addProperty("executionTimeNS", executionTimeNS);
+
             return new HttpResponse(
                     HttpVersion.HTTP_2_0,
                     200,
@@ -43,7 +47,7 @@ public class Main {
                     "application/json",
                     gson.toJson(jsonObject)
             );
-        } catch (Throwable error) {
+        } catch (Exception error) {
             throw new IllegalStateException("Failed to serialize object to json", error);
         }
     }
