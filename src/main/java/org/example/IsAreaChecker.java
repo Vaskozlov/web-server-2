@@ -1,6 +1,6 @@
 package org.example;
 
-public class AreaChecker {
+public class IsAreaChecker {
     private static boolean isInFirstQuarter(double x, double y, double r) {
         final double halfR = r / 2;
 
@@ -11,7 +11,7 @@ public class AreaChecker {
         return false;
     }
 
-    private static boolean inInFourthQuarter(double x, double y, double r) {
+    private static boolean isInFourthQuarter(double x, double y, double r) {
         final double halfR = r / 2;
 
         if (x >= 0 && y < 0) {
@@ -32,14 +32,8 @@ public class AreaChecker {
     }
 
     public static boolean isInArea(double x, double y, double r) {
-        if (isInFirstQuarter(x, y, r)) {
-            return true;
-        }
-
-        if (isInThirdQuarter(x, y, r)) {
-            return true;
-        }
-
-        return inInFourthQuarter(x, y, r);
+        return isInFirstQuarter(x, y, r)
+                || isInThirdQuarter(x, y, r)
+                || isInFourthQuarter(x, y, r);
     }
 }

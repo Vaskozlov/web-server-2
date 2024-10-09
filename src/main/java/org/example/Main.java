@@ -1,62 +1,17 @@
 package org.example;
 
 import com.fastcgi.FCGIInterface;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+import static org.example.RequestValidator.gson;
+import static org.example.RequestValidator.validateRequest;
+
 public class Main {
-    private record ValidationError(String value, String message) {
-    }
-
-    private record UserData(double x, double y, double r) {
-    }
-
-    static final double DoubleComparisonError = 1e-9;
-    static final Gson gson = new GsonBuilder().create();
-
-    private static final double[] availableRValues = {1.0, 1.5, 2, 2.5, 3.0};
-
-    private static Result<UserData, ValidationError> validateRequest(String content) {
-        UserData userData;
-        String xRepresentation;
-        String yRepresentation;
-
-        try {
-            userData = gson.fromJson(content, UserData.class);
-            JsonObject t = gson.fromJson(content, JsonObject.class);
-
-            xRepresentation = t.get("x").getAsString();
-            yRepresentation = t.get("y").getAsString();
-        } catch (JsonSyntaxException e) {
-            return Result.error(new ValidationError("json", e.getMessage()));
-        }
-
-        final double xAbsoluteValue = Math.abs(userData.x);
-        final double yAbsoluteValue = Math.abs(userData.y);
-
-        if (xAbsoluteValue > 3 || xRepresentation.matches("[+-]?3[.]0*[1-9]+\\d*")) {
-            return Result.error(new ValidationError("x", "x must be in range [-3, 3]"));
-        }
-
-        if (yAbsoluteValue > 5 || yRepresentation.matches("[+-]?5[.]0*[1-9]+\\d*")) {
-            return Result.error(new ValidationError("y", "y must be in range [-5, 5]"));
-        }
-
-        for (double r : availableRValues) {
-            if (Math.abs(userData.r - r) < DoubleComparisonError) {
-                return Result.ok(new UserData(userData.x, userData.y, r));
-            }
-        }
-
-        return Result.error(new ValidationError("r", "r must be in [1.0, 1.5, 2.0, 2.5, 3.0]"));
-    }
-
     private static HttpResponse errorResponse(ValidationError error) {
         return new HttpResponse(
                 HttpVersion.HTTP_2_0,
@@ -71,16 +26,17 @@ public class Main {
         return errorResponse(new ValidationError("bad request", content));
     }
 
-    private static HttpResponse successResponse(UserData data, boolean isInArea, long executionTimeNS) {
-        JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("x", data.x);
-        jsonObject.addProperty("y", data.y);
-        jsonObject.addProperty("r", data.r);
-        jsonObject.addProperty("isInArea", isInArea);
-        jsonObject.addProperty("executionTimeNS", executionTimeNS);
-
+    private static HttpResponse successResponse(DataFromUser data, boolean isInArea, long executionTimeNS) {
         try {
+            JsonObject jsonObject = new JsonObject();
+
+            for (Field field : data.getClass().getDeclaredFields()) {
+                jsonObject.addProperty(field.getName(), field.getDouble(data));
+            }
+
+            jsonObject.addProperty("isInArea", isInArea);
+            jsonObject.addProperty("executionTimeNS", executionTimeNS);
+
             return new HttpResponse(
                     HttpVersion.HTTP_2_0,
                     200,
@@ -88,22 +44,22 @@ public class Main {
                     "application/json",
                     gson.toJson(jsonObject)
             );
-        } catch (JsonSyntaxException jsonProcessingException) {
-            throw new IllegalStateException("Failed to serialize object to json", jsonProcessingException);
+        } catch (Throwable error) {
+            throw new IllegalStateException("Failed to serialize object to json", error);
         }
     }
 
     private static HttpResponse formResponse(String content) {
         long begin = System.nanoTime();
 
-        Result<UserData, ValidationError> validationResult = validateRequest(content);
+        Result<DataFromUser, ValidationError> validationResult = validateRequest(content);
 
         if (validationResult.isError()) {
             return errorResponse(validationResult.getError());
         }
 
-        UserData userData = validationResult.getValue();
-        boolean isInArea = AreaChecker.isInArea(userData.x, userData.y, userData.r);
+        DataFromUser userData = validationResult.getValue();
+        boolean isInArea = IsAreaChecker.isInArea(userData.x(), userData.y(), userData.r());
 
         long end = System.nanoTime();
 
