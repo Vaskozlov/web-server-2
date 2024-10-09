@@ -1,4 +1,4 @@
-package org.example;
+package org.server1;
 
 import java.nio.charset.StandardCharsets;
 

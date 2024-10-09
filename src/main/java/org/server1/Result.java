@@ -1,4 +1,4 @@
-package org.example;
+package org.server1;
 
 public class Result<V, E> {
     private final V value;

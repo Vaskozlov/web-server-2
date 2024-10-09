@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm")
 }
 
-group = "org.example"
+group = "org.server1"
 version = "1.0-SNAPSHOT"
 
 dependencies {
@@ -19,7 +19,7 @@ repositories {
 }
 
 application {
-    mainClass.set("org.example.Main")
+    mainClass.set("org.server1.Main")
 }
 
 tasks.test {

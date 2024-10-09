@@ -1,4 +1,4 @@
-package org.example;
+package org.server1;
 
 public enum HttpVersion {
     HTTP_0_9("HTTP/0.9"),

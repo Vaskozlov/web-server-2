@@ -1,4 +1,4 @@
-package org.example;
+package org.server1;
 
 public class IsAreaChecker {
     private static boolean isInFirstQuarter(double x, double y, double r) {
