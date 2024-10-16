@@ -1,4 +1,4 @@
-package org.server1;
+package org.vaskozlov.web2.lib;
 
 public class Result<V, E> {
     private final V value;

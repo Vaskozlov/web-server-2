@@ -1,0 +1,12 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.0">
+<display-name>web-app-2</display-name>
+    <servlet>
+        <servlet-name>ControllerServlet</servlet-name>
+        <servlet-class>org.vaskozlov.web2.servlet.ControllerServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ControllerServlet</servlet-name>
+        <url-pattern>/check_point</url-pattern>
+    </servlet-mapping>
+</web-app>

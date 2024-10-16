@@ -1,6 +1,6 @@
-package org.server1;
+package org.vaskozlov.web2.service;
 
-public class IsAreaChecker {
+public class AreaCheckService {
     private static boolean isInFirstQuarter(double x, double y, double r) {
         final double halfR = r / 2;
 
