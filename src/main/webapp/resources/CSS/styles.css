@@ -16,7 +16,79 @@ div#page-header h2 {
     font-size: x-large;
 }
 
+div#results-table-container {
+    float: left;
+    width: 65%;
+    margin-bottom: 100vh;
+    box-sizing: border-box;
+}
+
+div#input-space-container {
+    float: right;
+    width: 30%;
+    box-sizing: border-box;
+}
+
+div#results-table-container .result-table {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: 80vh;
+    border-radius: 5px;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+div#results-table-container .result-table thead {
+    flex: 0 0 auto;
+    width: calc(100% - 0.9em);
+}
+
+div#results-table-container .result-table tbody {
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+div#results-table-container .result-table tbody tr {
+    width: 100%;
+}
+
+div#results-table-container .result-table thead, table tbody tr {
+    display: table;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+div#results-table-container .result-table th {
+    border-collapse: collapse;
+    height: 2.5em;
+}
+
+div#results-table-container .result-table td {
+    border-collapse: collapse;
+    text-align: center;
+    padding: 12px 15px;
+}
+
+div#results-table-container .result-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+div#results-table-container .result-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+div#results-table-container .result-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+
 #box1 {
-    width: 200px;
-    height: 200px;
+    aspect-ratio: 1/1;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }

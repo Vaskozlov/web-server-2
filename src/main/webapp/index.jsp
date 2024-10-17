@@ -1,3 +1,7 @@
+<%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
+<%@ page import="java.util.List" %>
+<%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
+<%@ page import="org.vaskozlov.web2.service.ContextSynchronizationService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="ru">
@@ -17,8 +21,44 @@
             Выполнил: Козлов Василий Сергеевич P3215 408811
         </h2>
     </div>
-    <div class="jxgbox" id="box1">
+    <div id="results-table-container">
+        <table class="result-table" id="area-check-results-table">
+            <tr>
+                <th>x</th>
+                <th>y</th>
+                <th>r</th>
+                <th>is in area?</th>
+                <th>execution time</th>
+            </tr>
+            <%
+                final List<ResponseResult> responses = (List<ResponseResult>) ContextSynchronizationService.readFromContext(request, "responses");
 
+                if (responses != null) {
+                    for (final ResponseResult resp : responses) {
+            %>
+            <tr>
+                <td><%=resp.x()%>
+                </td>
+                <td><%=resp.y()%>
+                </td>
+                <td><%=resp.r()%>
+                </td>
+                <td><%=resp.isInArea() ? "yes" : "no"%>
+                </td>
+                <td><%=TimeFormatter.formatTime(resp.executionTime())%>
+                </td>
+            </tr>
+            <%
+                    }
+                }
+            %>
+        </table>
+    </div>
+    <div id="input-space-container">
+        <div class="jxgbox" id="box1">
+
+        </div>
+        <jsp:include page="form.jsp"/>
     </div>
 </main>
 <script src="resources/JS/result.js" type="module"></script>

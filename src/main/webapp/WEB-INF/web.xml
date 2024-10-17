@@ -1,5 +1,9 @@
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.0">
-<display-name>web-app-2</display-name>
+<web-app
+        version="3.0"
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+    <display-name>web-app-2</display-name>
     <servlet>
         <servlet-name>ControllerServlet</servlet-name>
         <servlet-class>org.vaskozlov.web2.servlet.ControllerServlet</servlet-class>
@@ -9,4 +13,17 @@
         <servlet-name>ControllerServlet</servlet-name>
         <url-pattern>/check_point</url-pattern>
     </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ControllerServlet</servlet-name>
+        <url-pattern>/remove_points</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>ControllerServlet</web-resource-name>
+            <url-pattern>/remove_points</url-pattern>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+    </security-constraint>
 </web-app>

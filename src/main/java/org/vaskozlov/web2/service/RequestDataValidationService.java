@@ -1,14 +1,22 @@
 package org.vaskozlov.web2.service;
 
+import lombok.Getter;
 import org.vaskozlov.web2.lib.RequestValidationError;
 import org.vaskozlov.web2.lib.Result;
 import org.vaskozlov.web2.lib.TransformedRequestData;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class RequestDataValidationService {
     private static final double DOUBLE_COMPARISON_ERROR = 1e-9;
-    private static final double[] availableRValues = {1.0, 1.5, 2, 2.5, 3.0};
+
+    private static final String AVAILABLE_R_VALUES_STRING = "1.0, 1.5, 2.0, 2.5, 3.0";
+
+    @Getter
+    private static final double[] AVAILABLE_R_VALUES = Arrays.stream(AVAILABLE_R_VALUES_STRING.split(", "))
+            .mapToDouble(Double::parseDouble)
+            .toArray();
 
     private static final Pattern PATTERN_FOR_X = Pattern.compile("[+-]?3[.]0*[1-9]+\\d*");
     private static final Pattern PATTERN_FOR_Y = Pattern.compile("[+-]?5[.]0*[1-9]+\\d*");
@@ -17,12 +25,18 @@ public class RequestDataValidationService {
         try {
             return Result.ok(Double.parseDouble(value));
         } catch (NumberFormatException e) {
-            return Result.error(new RequestValidationError(valueName, valueName + " must be a number"));
+            return Result.error(new RequestValidationError(
+                    valueName,
+                    "%s must be a number".formatted(valueName)
+            ));
         }
     }
 
     private static Result<Double, RequestValidationError> createMissingFieldError(String fieldName) {
-        return Result.error(new RequestValidationError(fieldName, "Request must contain " + fieldName));
+        return Result.error(new RequestValidationError(
+                fieldName,
+                "Request must contain %s".formatted(fieldName)
+        ));
     }
 
     private static Result<Double, RequestValidationError> validateRequestField(String field, String fieldName) {
@@ -55,19 +69,28 @@ public class RequestDataValidationService {
         double rValue = rResult.getValue();
 
         if (Math.abs(xValue) > 3 || PATTERN_FOR_X.matcher(x).matches()) {
-            return Result.error(new RequestValidationError("x", "x must be in range [-3, 3]"));
+            return Result.error(new RequestValidationError(
+                    "x",
+                    "x must be in range [-3, 3]")
+            );
         }
 
         if (Math.abs(yValue) > 5 || PATTERN_FOR_Y.matcher(y).matches()) {
-            return Result.error(new RequestValidationError("y", "y must be in range [-5, 5]"));
+            return Result.error(new RequestValidationError(
+                    "y",
+                    "y must be in range [-5, 5]")
+            );
         }
 
-        for (double rVal : availableRValues) {
+        for (double rVal : AVAILABLE_R_VALUES) {
             if (Math.abs(rValue - rVal) <= DOUBLE_COMPARISON_ERROR) {
                 return Result.ok(new TransformedRequestData(xValue, yValue, rValue));
             }
         }
 
-        return Result.error(new RequestValidationError("r", "r must be in [1.0, 1.5, 2.0, 2.5, 3.0]"));
+        return Result.error(new RequestValidationError(
+                "r",
+                "r must be in [%s]".formatted(AVAILABLE_R_VALUES_STRING)
+        ));
     }
 }
