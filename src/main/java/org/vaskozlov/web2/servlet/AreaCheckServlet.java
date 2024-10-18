@@ -6,7 +6,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.vaskozlov.web2.lib.*;
+import org.vaskozlov.web2.lib.ConvertedCheckParameters;
+import org.vaskozlov.web2.lib.RequestValidationError;
+import org.vaskozlov.web2.lib.ResponseResult;
+import org.vaskozlov.web2.lib.Result;
 import org.vaskozlov.web2.service.AreaCheckService;
 import org.vaskozlov.web2.service.ContextSynchronizationService;
 import org.vaskozlov.web2.service.RequestDataValidationService;
@@ -26,7 +29,7 @@ public class AreaCheckServlet extends HttpServlet {
         final String y = request.getParameter("y");
         final String r = request.getParameter("r");
 
-        final Result<TransformedRequestData, RequestValidationError> dataValidationResult =
+        final Result<ConvertedCheckParameters, RequestValidationError> dataValidationResult =
                 RequestDataValidationService.validateRequestData(x, y, r);
 
         if (dataValidationResult.isError()) {
@@ -35,7 +38,7 @@ public class AreaCheckServlet extends HttpServlet {
             return;
         }
 
-        final TransformedRequestData transformedData = dataValidationResult.getValue();
+        final ConvertedCheckParameters transformedData = dataValidationResult.getValue();
         final boolean isInArea = AreaCheckService.isInArea(transformedData.x(), transformedData.y(), transformedData.r());
 
         final long executionTime = System.nanoTime() - executionBegin;
@@ -48,7 +51,8 @@ public class AreaCheckServlet extends HttpServlet {
                 executionTime
         );
 
-        try (var ignored = AutoWriteUnlock.lock(ContextSynchronizationService.lock)) {
+
+        try (var ignored = ContextSynchronizationService.applyWriteLock()) {
             final ServletContext context = request.getServletContext();
             List<ResponseResult> responses = (List<ResponseResult>) context.getAttribute("responses");
 

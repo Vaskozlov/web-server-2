@@ -3,7 +3,7 @@ package org.vaskozlov.web2.service;
 import lombok.Getter;
 import org.vaskozlov.web2.lib.RequestValidationError;
 import org.vaskozlov.web2.lib.Result;
-import org.vaskozlov.web2.lib.TransformedRequestData;
+import org.vaskozlov.web2.lib.ConvertedCheckParameters;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -47,10 +47,10 @@ public class RequestDataValidationService {
         return validateNumber(field, fieldName);
     }
 
-    public static Result<TransformedRequestData, RequestValidationError> validateRequestData(String x, String y, String r) {
-        Result<Double, RequestValidationError> xResult = validateRequestField(x, "x");
-        Result<Double, RequestValidationError> yResult = validateRequestField(y, "y");
-        Result<Double, RequestValidationError> rResult = validateRequestField(r, "r");
+    public static Result<ConvertedCheckParameters, RequestValidationError> validateRequestData(String x, String y, String r) {
+        final Result<Double, RequestValidationError> xResult = validateRequestField(x, "x");
+        final Result<Double, RequestValidationError> yResult = validateRequestField(y, "y");
+        final Result<Double, RequestValidationError> rResult = validateRequestField(r, "r");
 
         if (xResult.isError()) {
             return Result.error(xResult.getError());
@@ -64,27 +64,13 @@ public class RequestDataValidationService {
             return Result.error(rResult.getError());
         }
 
-        double xValue = xResult.getValue();
-        double yValue = yResult.getValue();
-        double rValue = rResult.getValue();
-
-        if (Math.abs(xValue) > 3 || PATTERN_FOR_X.matcher(x).matches()) {
-            return Result.error(new RequestValidationError(
-                    "x",
-                    "x must be in range [-3, 3]")
-            );
-        }
-
-        if (Math.abs(yValue) > 5 || PATTERN_FOR_Y.matcher(y).matches()) {
-            return Result.error(new RequestValidationError(
-                    "y",
-                    "y must be in range [-5, 5]")
-            );
-        }
+        final double xValue = xResult.getValue();
+        final double yValue = yResult.getValue();
+        final double rValue = rResult.getValue();
 
         for (double rVal : AVAILABLE_R_VALUES) {
             if (Math.abs(rValue - rVal) <= DOUBLE_COMPARISON_ERROR) {
-                return Result.ok(new TransformedRequestData(xValue, yValue, rValue));
+                return Result.ok(new ConvertedCheckParameters(xValue, yValue, rValue));
             }
         }
 

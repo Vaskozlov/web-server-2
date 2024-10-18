@@ -2,7 +2,7 @@
     color-scheme: light;
 }
 
-div#page-header h1, h2 {
+div#page-header h1, h2, h3 {
     text-align: center;
     font-family: 'Serif', serif;
     color: rgb(0, 0, 83);
@@ -14,6 +14,10 @@ div#page-header h1 {
 
 div#page-header h2 {
     font-size: x-large;
+}
+
+div#page-header h3 {
+    font-size: large;
 }
 
 div#results-table-container {

@@ -5,7 +5,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.vaskozlov.web2.lib.AutoWriteUnlock;
 import org.vaskozlov.web2.service.ContextSynchronizationService;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class ControllerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getServletPath();
 
         if (path.equals("/remove_points")) {
@@ -35,11 +34,11 @@ public class ControllerServlet extends HttpServlet {
             return;
         }
 
-        doGet(request, response);
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request: Invalid path");
     }
 
     private void removeResponses(HttpServletRequest request) {
-        try (var ignored = AutoWriteUnlock.lock(ContextSynchronizationService.lock)) {
+        try (var ignored = ContextSynchronizationService.applyWriteLock()) {
             request.getServletContext().removeAttribute("responses");
         }
     }

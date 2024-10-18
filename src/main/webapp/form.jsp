@@ -21,7 +21,7 @@
             for (double r : RequestDataValidationService.getAVAILABLE_R_VALUES()) {
         %>
         <div>
-            <input id="r=<%=r%>" name="<%=r%>" type="checkbox"/>
+            <input id="r=<%=r%>" class="r_value_checkbox" name="<%=r%>" type="checkbox"/>
             <label for="r=<%=r%>">
                 R = <%=r%>
             </label>
@@ -31,5 +31,5 @@
         %>
     </fieldset>
     <button type="submit">Submit</button>
-    <button type="button" id="clear_table_button">Clear table</button>
+    <button type="button" id="clear_button">Clear table</button>
 </form>

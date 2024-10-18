@@ -5,6 +5,6 @@ public record ResponseResult(
         double y,
         double r,
         boolean isInArea,
-        long executionTime
+        long executionTimeNs
 ) {
 }

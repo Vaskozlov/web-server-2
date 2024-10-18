@@ -1,3 +1,5 @@
+import {IllegalStateError} from "./illegal_state_error.js";
+
 export class Result<V, E> {
     private readonly value: V;
     private readonly error: E;
@@ -28,7 +30,7 @@ export class Result<V, E> {
             return this.value;
         }
 
-        throw new Error("Cannot get value from failure result");
+        throw new IllegalStateError("Cannot get value from failure result");
     }
 
     public getError() : E {
@@ -36,6 +38,6 @@ export class Result<V, E> {
             return this.error;
         }
 
-        throw new Error("Cannot get error from success result");
+        throw new IllegalStateError("Cannot get error from success result");
     }
 }
