@@ -1,8 +1,7 @@
 <%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
-<%@ page import="java.util.List" %>
 <%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
 <%@ page import="org.vaskozlov.web2.service.ContextSynchronizationService" %>
-<%@ page import="org.vaskozlov.web2.lib.FloatRounder" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="ru">
@@ -23,21 +22,21 @@
                 <jsp:include page="standart_table_header.jsp"/>
             </tr>
             <%
-                final Iterable<ResponseResult> responses = (Iterable<ResponseResult>) ContextSynchronizationService.readFromContext(request, "responses");
+                final List<ResponseResult> responses = (List<ResponseResult>) ContextSynchronizationService.readFromContext(request, "responses");
 
                 if (responses != null) {
                     for (final ResponseResult resp : responses) {
             %>
             <tr>
-                <td><%=FloatRounder.round(resp.x(), 3)%>
+                <td><%="%.2f".formatted(resp.x())%>
                 </td>
-                <td><%=FloatRounder.round(resp.y(), 3)%>
+                <td><%="%.2f".formatted(resp.y())%>
                 </td>
-                <td><%=FloatRounder.round(resp.r(), 3)%>
+                <td><%="%.2f".formatted(resp.r())%>
                 </td>
                 <td><%=resp.isInArea() ? "yes" : "no"%>
                 </td>
-                <td><%=TimeFormatter.formatTime(resp.executionTimeNs())%>
+                <td><%=TimeFormatter.formatExecutionTime(resp.executionTimeNs())%>
                 </td>
             </tr>
             <%

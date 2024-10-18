@@ -14,4 +14,12 @@ export class RowBuilder {
         cell.innerText = value.trim();
         return this;
     }
+
+    public addCells(cells: HTMLCollectionOf<HTMLTableCellElement>): RowBuilder {
+        for (const cell of cells) {
+            this.addCell(cell);
+        }
+
+        return this;
+    }
 }

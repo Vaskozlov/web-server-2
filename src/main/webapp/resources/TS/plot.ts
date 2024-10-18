@@ -88,9 +88,8 @@ export class Plot {
     public removeAllPoints(): void {
         this.board.suspendUpdate();
 
-        while (this.created_points.length != 0) {
-            this.board.removeObject(this.created_points.pop());
-        }
+        this.created_points.forEach(point => this.board.removeObject(point));
+        this.created_points.length = 0;
 
         this.board.unsuspendUpdate();
     }

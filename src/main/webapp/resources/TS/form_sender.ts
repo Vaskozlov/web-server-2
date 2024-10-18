@@ -1,9 +1,14 @@
-import {r_checkboxes} from "./globals.js";
-import {stringToFloat} from "./string_to_float.js";
-import {testPointUsingRadiusSelector} from "./test_point.js";
+import {testPoint} from "./point_tester.js";
+import {stringToFloat} from "./lib/string_to_float.js";
+import {getCheckboxCheckedValues} from "./page_elements.js";
 
 const x_input_element = document.getElementById("x_input") as HTMLInputElement;
 const y_input_element = document.getElementById("y_input") as HTMLInputElement;
+
+function setCustomValidity(input_element: HTMLInputElement, error: Error): void {
+    input_element.setCustomValidity(error.message);
+    input_element.reportValidity();
+}
 
 export async function formSubmitionHandler(event: Event) {
     event.preventDefault();
@@ -12,21 +17,19 @@ export async function formSubmitionHandler(event: Event) {
     const y_result = stringToFloat(y_input_element.value);
 
     if (x_result.isFailure()) {
-        x_input_element.setCustomValidity(x_result.getError());
-        x_input_element.reportValidity();
+        setCustomValidity(x_input_element, x_result.getError());
         return;
     }
 
     if (y_result.isFailure()) {
-        y_input_element.setCustomValidity(y_result.getError());
-        y_input_element.reportValidity();
+        setCustomValidity(y_input_element, y_result.getError());
         return;
     }
 
     const x: number = x_result.getValue();
     const y: number = y_result.getValue();
 
-    for (const r_checkbox of r_checkboxes) {
-        await testPointUsingRadiusSelector(x, y, r_checkbox, false);
+    for (const r of getCheckboxCheckedValues()) {
+        await testPoint(x, y, r);
     }
 }

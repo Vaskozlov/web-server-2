@@ -1,8 +1,5 @@
 <%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
-<%@ page import="java.util.List" %>
 <%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
-<%@ page import="org.vaskozlov.web2.service.ContextSynchronizationService" %>
-<%@ page import="org.vaskozlov.web2.lib.FloatRounder" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="ru">
@@ -12,15 +9,7 @@
     <title>Lab2 webpage</title>
 </head>
 <%
-
-    final List<ResponseResult> responses = (List<ResponseResult>) ContextSynchronizationService.readFromContext(request, "responses");
-
-    if (responses == null || responses.isEmpty()) {
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
-        return;
-    }
-
-    final ResponseResult lastResponse = responses.getLast();
+    final ResponseResult lastResponse = (ResponseResult) request.getAttribute("responseResult");
     response.setStatus(200 + (lastResponse.isInArea() ? 0 : 1));
 %>
 <body>
@@ -42,19 +31,19 @@
             </tr>
             <tr>
                 <td>
-                    <%=FloatRounder.round(lastResponse.x(), 3)%>
+                    <%="%.2f".formatted(lastResponse.x())%>
                 </td>
                 <td>
-                    <%=FloatRounder.round(lastResponse.y(), 3)%>
+                    <%="%.2f".formatted(lastResponse.y())%>
                 </td>
                 <td>
-                    <%=FloatRounder.round(lastResponse.r(), 3)%>
+                    <%="%.2f".formatted(lastResponse.r())%>
                 </td>
                 <td>
                     <%=lastResponse.isInArea() ? "yes" : "no"%>
                 </td>
                 <td>
-                    <%=TimeFormatter.formatTime(lastResponse.executionTimeNs())%>
+                    <%=TimeFormatter.formatExecutionTime(lastResponse.executionTimeNs())%>
                 </td>
             </tr>
         </table>

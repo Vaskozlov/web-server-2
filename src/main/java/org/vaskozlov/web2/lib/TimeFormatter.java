@@ -1,7 +1,7 @@
 package org.vaskozlov.web2.lib;
 
 public class TimeFormatter {
-    public static String formatTime(long timeNs) {
+    public static String formatExecutionTime(long timeNs) {
         final double timeUs = timeNs / 1000.0;
         final double timeMs = timeUs / 1000.0;
         final double timeS = timeMs / 1000.0;

@@ -9,7 +9,7 @@ public class Result<V, E> {
         this.error = error;
     }
 
-    public static <V, E> Result<V, E> ok(V value) {
+    public static <V, E> Result<V, E> success(V value) {
         return new Result<>(value, null);
     }
 
@@ -17,12 +17,12 @@ public class Result<V, E> {
         return new Result<>(null, error);
     }
 
-    public boolean isOk() {
+    public boolean isSuccess() {
         return value != null;
     }
 
     public boolean isError() {
-        return !isOk();
+        return !isSuccess();
     }
 
     public V getValue() {
@@ -34,7 +34,7 @@ public class Result<V, E> {
     }
 
     public E getError() {
-        if (isOk()) {
+        if (isSuccess()) {
             throw new IllegalStateException("No error present");
         }
 

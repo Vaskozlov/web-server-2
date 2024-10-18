@@ -21,7 +21,7 @@
             for (double r : RequestDataValidationService.getAVAILABLE_R_VALUES()) {
         %>
         <div>
-            <input id="r=<%=r%>" class="r_value_checkbox" name="<%=r%>" type="checkbox"/>
+            <input type="checkbox" id="r=<%=r%>" class="r_value_checkbox" value="<%=r%>"/>
             <label for="r=<%=r%>">
                 R = <%=r%>
             </label>

@@ -1,14 +1,22 @@
-import {formSubmitionHandler} from "./form_submition.js"
-import {main_plot, r_checkboxes, server_base_url} from "./globals.js";
-import {main_table_manager, testPointUsingRadiusSelector} from "./test_point.js";
-
-const clear_button = document.getElementById("clear_button") as HTMLButtonElement;
+import {testPoint} from "./point_tester.js";
+import {formSubmitionHandler} from "./form_sender.js"
+import {clear_button, getCheckboxCheckedValues, main_plot, main_table_manager} from "./page_elements.js";
 
 document.getElementById("main-form").onsubmit = formSubmitionHandler;
 
 window.onload = () => {
     main_plot.setOnClickFunction(drawPointsOnPlotClick);
     drawPointsFromTable();
+}
+
+clear_button.onclick = async (_: Event) => {
+    try {
+        await clearTable();
+    } catch (e) {
+        alert("Failed to clear the table");
+        console.log(e.message);
+        console.log(e.stack);
+    }
 }
 
 function drawPointsFromTable() {
@@ -20,22 +28,14 @@ function drawPointsFromTable() {
 }
 
 async function drawPointsOnPlotClick(x: number, y: number) {
-    for (const r_checkbox of r_checkboxes) {
-        await testPointUsingRadiusSelector(x, y, r_checkbox, true);
-    }
-}
-
-clear_button.onclick = async (_: Event) => {
-    try {
-        await clearTable();
-    } catch (e) {
-        alert("Failed to clear the table");
+    for (const r of getCheckboxCheckedValues()) {
+        await testPoint(x * r, y * r, r);
     }
 }
 
 async function clearTable() {
     const response = await fetch(
-        `${server_base_url}/remove_points`,
+        `./remove_points`,
         {
             method: "DELETE"
         }
