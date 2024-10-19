@@ -1,9 +1,19 @@
 package org.vaskozlov.web2.service;
 
 public class AreaCheckService {
-    private static boolean isInFirstQuarter(double x, double y, double r) {
-        final double halfR = r / 2;
+    private final double x;
+    private final double y;
+    private final double r;
+    private final double halfR;
 
+    public AreaCheckService(double x, double y, double r) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.halfR = r / 2;
+    }
+
+    private boolean isInFirstQuarter() {
         if (x >= 0 && y >= 0) {
             return (x <= r && y <= halfR - x / 2);
         }
@@ -11,19 +21,11 @@ public class AreaCheckService {
         return false;
     }
 
-    private static boolean isInFourthQuarter(double x, double y, double r) {
-        final double halfR = r / 2;
-
-        if (x >= 0 && y < 0) {
-            return (x <= r && -y <= halfR);
-        }
-
-        return false;
+    private boolean isInSecondQuarter() {
+        return false; //NOSONAR
     }
 
-    private static boolean isInThirdQuarter(double x, double y, double r) {
-        final double halfR = r / 2;
-
+    private boolean isInThirdQuarter() {
         if (x < 0 && y <= 0) {
             return Math.sqrt(x * x + y * y) <= halfR;
         }
@@ -31,9 +33,18 @@ public class AreaCheckService {
         return false;
     }
 
-    public static boolean isInArea(double x, double y, double r) {
-        return isInFirstQuarter(x, y, r)
-                || isInThirdQuarter(x, y, r)
-                || isInFourthQuarter(x, y, r);
+    private boolean isInFourthQuarter() {
+        if (x >= 0 && y < 0) {
+            return (x <= r && -y <= halfR);
+        }
+
+        return false;
+    }
+
+    public boolean isInArea() {
+        return isInFirstQuarter()
+                || isInSecondQuarter()
+                || isInThirdQuarter()
+                || isInFourthQuarter();
     }
 }

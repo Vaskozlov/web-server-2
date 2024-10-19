@@ -1,5 +1,5 @@
 import {createUrlWithParameters} from "./lib/query.js";
-import {main_plot, main_table_manager} from "./page_elements.js";
+import {main_plot, point_check_table_manager} from "./page_elements.js";
 
 const dom_parser = new DOMParser();
 const status_code_in_case_point_is_in_area = 200;
@@ -35,7 +35,7 @@ async function addNewRowToTable(response: Response) {
     const table = doc.getElementById("area-check-results-table") as HTMLTableElement;
     const second_row = table.rows[1];
 
-    main_table_manager
+    point_check_table_manager
         .addRow()
         .addCells(second_row.cells);
 }

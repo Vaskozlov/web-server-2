@@ -6,16 +6,26 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.vaskozlov.web2.service.ContextSynchronizationService;
+import org.vaskozlov.web2.service.ErrorPageWriter;
 
 import java.io.IOException;
+import java.util.Locale;
 
 @WebServlet("/controller")
 public class ControllerServlet extends HttpServlet {
     private final AreaCheckServlet areaCheckServlet = new AreaCheckServlet();
 
     @Override
+    public void init() throws ServletException {
+        super.init();
+        Locale.setDefault(Locale.ENGLISH); // афанас предпочитает запятые в дробях...
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getServletPath();
+        response.setContentType("text/html");
+
+        final String path = request.getServletPath();
 
         if (path.equals("/check_point")) {
             areaCheckServlet.doGet(request, response);
@@ -27,14 +37,22 @@ public class ControllerServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String path = request.getServletPath();
+        response.setContentType("text/html");
+
+        final String path = request.getServletPath();
 
         if (path.equals("/remove_points")) {
             removeResponses(request);
             return;
         }
 
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request: Invalid path");
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+        ErrorPageWriter.writeErrorPage(
+                "ControllerServlet",
+                "Invalid path for a delete request",
+                response.getWriter()
+        );
     }
 
     private void removeResponses(HttpServletRequest request) {

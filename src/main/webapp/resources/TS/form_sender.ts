@@ -1,6 +1,6 @@
 import {testPoint} from "./point_tester.js";
 import {stringToFloat} from "./lib/string_to_float.js";
-import {getCheckboxCheckedValues} from "./page_elements.js";
+import {getRCheckboxesSelectedValues} from "./page_elements.js";
 
 const x_input_element = document.getElementById("x_input") as HTMLInputElement;
 const y_input_element = document.getElementById("y_input") as HTMLInputElement;
@@ -29,7 +29,7 @@ export async function formSubmitionHandler(event: Event) {
     const x: number = x_result.getValue();
     const y: number = y_result.getValue();
 
-    for (const r of getCheckboxCheckedValues()) {
+    for (const r of getRCheckboxesSelectedValues()) {
         await testPoint(x, y, r);
     }
 }

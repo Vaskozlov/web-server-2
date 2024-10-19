@@ -96,6 +96,7 @@ export class Plot {
 
     public drawAreas(): void {
         this.drawAreaInFirstQuarter();
+        this.drawAreaInSecondQuarter();
         this.drawAreaInThirdQuarter();
         this.drawAreaInFourthQuarter();
     }
@@ -111,6 +112,10 @@ export class Plot {
                     visible: false
                 },
             })
+    }
+
+    public drawAreaInSecondQuarter(): void {
+
     }
 
     private drawAreaInThirdQuarter() {

@@ -1,10 +1,10 @@
 import {HtmlTableManager} from "./html_table_manager.js";
 import {IllegalStateError} from "../lib/illegal_state_error.js";
 
-export class ResultTableManager extends HtmlTableManager {
-    public static fromTableId(table_id: string): ResultTableManager {
+export class PointCheckTableManager extends HtmlTableManager {
+    public static fromTableId(table_id: string): PointCheckTableManager {
         const table = document.getElementById(table_id) as HTMLTableElement;
-        return new ResultTableManager(table);
+        return new PointCheckTableManager(table);
     }
 
     public constructor(table: HTMLTableElement) {
@@ -18,9 +18,8 @@ export class ResultTableManager extends HtmlTableManager {
 
         for (let i = from; i < this.table.rows.length; i++) {
             const row = this.table.rows[i];
-            const cells = row.cells;
 
-            const trimmed_elements = [...cells]
+            const trimmed_elements = [...row.cells]
                 .map(cell => cell.innerText.trim())
 
             const values = trimmed_elements

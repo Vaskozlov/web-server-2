@@ -24,13 +24,11 @@ public class AreaCheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         final long executionBeginNs = System.nanoTime();
+        final var requestParameters = getParametersFromRequest(request);
 
-        final var dataValidationResult = getParametersFromRequest(request);
-
-        response.setContentType("text/html");
-
-        if (dataValidationResult.isError()) {
-            var validationError = dataValidationResult.getError();
+        if (requestParameters.isError()) {
+            var validationError = requestParameters.getError();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
             ErrorPageWriter.writeErrorPage(
                     validationError.component(),
@@ -42,7 +40,7 @@ public class AreaCheckServlet extends HttpServlet {
 
         final ResponseResult responseResult = formResponseResult(
                 executionBeginNs,
-                dataValidationResult.getValue()
+                requestParameters.getValue()
         );
 
         saveResultInContext(request, responseResult);
@@ -60,11 +58,11 @@ public class AreaCheckServlet extends HttpServlet {
     }
 
     private static ResponseResult formResponseResult(long executionBegin, RequestParameters transformedData) {
-        final boolean isInArea = AreaCheckService.isInArea(
+        final boolean isInArea = new AreaCheckService(
                 transformedData.x(),
                 transformedData.y(),
                 transformedData.r()
-        );
+        ).isInArea();
 
         return new ResponseResult(
                 transformedData.x(),
