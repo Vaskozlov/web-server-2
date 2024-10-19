@@ -43,7 +43,7 @@ public class AreaCheckServlet extends HttpServlet {
                 requestParameters.getValue()
         );
 
-        saveResultInContext(request, responseResult);
+        saveResultInContext(getServletContext(), responseResult);
         request.setAttribute("responseResult", responseResult);
 
         request.getRequestDispatcher("/check_result.jsp").forward(request, response);
@@ -73,9 +73,8 @@ public class AreaCheckServlet extends HttpServlet {
         );
     }
 
-    private static void saveResultInContext(HttpServletRequest request, ResponseResult currentResult) {
+    private static void saveResultInContext(ServletContext context, ResponseResult currentResult) {
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
-            final ServletContext context = request.getServletContext();
             List<ResponseResult> responses = (List<ResponseResult>) context.getAttribute("responses");
 
             if (responses == null) {

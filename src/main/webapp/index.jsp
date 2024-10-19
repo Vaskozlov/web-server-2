@@ -22,7 +22,11 @@
                 <jsp:include page="standart_table_header.jsp"/>
             </tr>
             <%
-                final List<ResponseResult> responses = (List<ResponseResult>) ContextSynchronizationService.readFromContext(request, "responses");
+                final List<ResponseResult> responses =
+                        (List<ResponseResult>) ContextSynchronizationService.readFromContext(
+                                request.getServletContext(),
+                                "responses"
+                        );
 
                 if (responses != null) {
                     for (final ResponseResult resp : responses) {

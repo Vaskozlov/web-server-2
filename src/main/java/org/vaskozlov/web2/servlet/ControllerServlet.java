@@ -1,5 +1,6 @@
 package org.vaskozlov.web2.servlet;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,6 +20,12 @@ public class ControllerServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         Locale.setDefault(Locale.ENGLISH); // афанас предпочитает запятые в дробях...
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        areaCheckServlet.init(config);
     }
 
     @Override
@@ -42,7 +49,7 @@ public class ControllerServlet extends HttpServlet {
         final String path = request.getServletPath();
 
         if (path.equals("/remove_points")) {
-            removeResponses(request);
+            removeResponsesFromContext();
             return;
         }
 
@@ -55,9 +62,9 @@ public class ControllerServlet extends HttpServlet {
         );
     }
 
-    private void removeResponses(HttpServletRequest request) {
+    private void removeResponsesFromContext() {
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
-            request.getServletContext().removeAttribute("responses");
+            getServletContext().removeAttribute("responses");
         }
     }
 }
