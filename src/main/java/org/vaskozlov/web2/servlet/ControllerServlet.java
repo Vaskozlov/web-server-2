@@ -1,5 +1,6 @@
 package org.vaskozlov.web2.servlet;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,14 +15,19 @@ import java.util.Locale;
 
 @WebServlet(urlPatterns = {"/check", "/remove_points"}, loadOnStartup = 1, asyncSupported = true)
 public class ControllerServlet extends HttpServlet {
+    private final AreaCheckServlet areaCheckServlet = new AreaCheckServlet();
+
     @Override
-    public void init() throws ServletException {
-        super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
         Locale.setDefault(Locale.ENGLISH); // Афанас предпочитает запятые в дробях...
 
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
             getServletContext().setAttribute("responses", new ArrayList<>());
         }
+
+        areaCheckServlet.init(config);
     }
 
     @Override
@@ -31,7 +37,7 @@ public class ControllerServlet extends HttpServlet {
         final String path = request.getServletPath();
 
         if (path.equals("/check")) {
-            request.getRequestDispatcher("check_if_point_is_in_area").forward(request, response);
+            areaCheckServlet.doGet(request, response);
             return;
         }
 

@@ -18,7 +18,7 @@ import org.vaskozlov.web2.service.RequestDataValidationService;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/check_if_point_is_in_area", asyncSupported = true)
+@WebServlet(asyncSupported = true)
 public class AreaCheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
