@@ -1,6 +1,5 @@
 package org.vaskozlov.web2.servlet;
 
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,22 +9,19 @@ import org.vaskozlov.web2.service.ContextSynchronizationService;
 import org.vaskozlov.web2.service.ErrorPageWriter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 
-@WebServlet("/controller")
+@WebServlet(urlPatterns = {"/check", "/remove_points"}, loadOnStartup = 1, asyncSupported = true)
 public class ControllerServlet extends HttpServlet {
-    private final AreaCheckServlet areaCheckServlet = new AreaCheckServlet();
-
     @Override
     public void init() throws ServletException {
         super.init();
-        Locale.setDefault(Locale.ENGLISH); // афанас предпочитает запятые в дробях...
-    }
+        Locale.setDefault(Locale.ENGLISH); // Афанас предпочитает запятые в дробях...
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        areaCheckServlet.init(config);
+        try (var ignored = ContextSynchronizationService.applyWriteLock()) {
+            getServletContext().setAttribute("responses", new ArrayList<>());
+        }
     }
 
     @Override
@@ -34,8 +30,8 @@ public class ControllerServlet extends HttpServlet {
 
         final String path = request.getServletPath();
 
-        if (path.equals("/check_point")) {
-            areaCheckServlet.doGet(request, response);
+        if (path.equals("/check")) {
+            request.getRequestDispatcher("check_if_point_is_in_area").forward(request, response);
             return;
         }
 
@@ -64,7 +60,8 @@ public class ControllerServlet extends HttpServlet {
 
     private void removeResponsesFromContext() {
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
-            getServletContext().removeAttribute("responses");
+            ArrayList<?> responses = (ArrayList<?>) getServletContext().getAttribute("responses");
+            responses.clear();
         }
     }
 }

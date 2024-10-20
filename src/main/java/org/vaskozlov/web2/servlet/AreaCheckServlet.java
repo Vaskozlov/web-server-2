@@ -16,10 +16,9 @@ import org.vaskozlov.web2.service.ErrorPageWriter;
 import org.vaskozlov.web2.service.RequestDataValidationService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/AreaCheckServlet")
+@WebServlet(urlPatterns = "/check_if_point_is_in_area", asyncSupported = true)
 public class AreaCheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -75,14 +74,7 @@ public class AreaCheckServlet extends HttpServlet {
 
     private static void saveResultInContext(ServletContext context, ResponseResult currentResult) {
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
-            List<ResponseResult> responses = (List<ResponseResult>) context.getAttribute("responses");
-
-            if (responses == null) {
-                responses = new ArrayList<>();
-            }
-
-            responses.add(currentResult);
-            context.setAttribute("responses", responses);
+            ((List<ResponseResult>) context.getAttribute("responses")).add(currentResult);
         }
     }
 }

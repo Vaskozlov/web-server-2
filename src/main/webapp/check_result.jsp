@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
 <%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -29,22 +30,13 @@
                 <th>is in area?</th>
                 <th>execution time (ns)</th>
             </tr>
+            <jsp:useBean id="responseResult" scope="request" class="org.vaskozlov.web2.lib.ResponseResult"/>
             <tr>
-                <td>
-                    <%="%.2f".formatted(lastResponse.x())%>
-                </td>
-                <td>
-                    <%="%.2f".formatted(lastResponse.y())%>
-                </td>
-                <td>
-                    <%="%.2f".formatted(lastResponse.r())%>
-                </td>
-                <td>
-                    <%=lastResponse.isInArea() ? "yes" : "no"%>
-                </td>
-                <td>
-                    <%=TimeFormatter.formatExecutionTime(lastResponse.executionTimeNs())%>
-                </td>
+                <td><c:out value="${String.format('%.2f', responseResult.x())}"/></td>
+                <td><c:out value="${String.format('%.2f', responseResult.y())}"/></td>
+                <td><c:out value="${String.format('%.2f', responseResult.r())}"/></td>
+                <td><c:out value="${responseResult.isInArea() ? 'yes' : 'no'}"/></td>
+                <td><c:out value="${TimeFormatter.formatExecutionTime(responseResult.executionTimeNs())}"/></td>
             </tr>
         </table>
     </div>

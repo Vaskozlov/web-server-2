@@ -5,7 +5,7 @@ const dom_parser = new DOMParser();
 const status_code_in_case_point_is_in_area = 200;
 
 export async function testPoint(x: number, y: number, r: number) {
-    const url = createUrlWithParameters('./check_point', {x, y, r});
+    const url = createUrlWithParameters('./check', {x, y, r});
 
     const response = await fetch(
         url,

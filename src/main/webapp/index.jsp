@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
 <%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
 <%@ page import="org.vaskozlov.web2.service.ContextSynchronizationService" %>
@@ -21,32 +22,19 @@
             <tr>
                 <jsp:include page="standart_table_header.jsp"/>
             </tr>
-            <%
-                final List<ResponseResult> responses =
-                        (List<ResponseResult>) ContextSynchronizationService.readFromContext(
-                                request.getServletContext(),
-                                "responses"
-                        );
-
-                if (responses != null) {
-                    for (final ResponseResult resp : responses) {
-            %>
-            <tr>
-                <td><%="%.2f".formatted(resp.x())%>
-                </td>
-                <td><%="%.2f".formatted(resp.y())%>
-                </td>
-                <td><%="%.2f".formatted(resp.r())%>
-                </td>
-                <td><%=resp.isInArea() ? "yes" : "no"%>
-                </td>
-                <td><%=TimeFormatter.formatExecutionTime(resp.executionTimeNs())%>
-                </td>
-            </tr>
-            <%
-                    }
-                }
-            %>
+            <jsp:useBean id="responses" scope="application"
+                         type="java.util.List<org.vaskozlov.web2.lib.ResponseResult>"/>
+            <c:if test="${responses != null}">
+                <c:forEach var="resp" items="${responses}">
+                    <tr>
+                        <td><c:out value="${String.format('%.2f', resp.x())}"/></td>
+                        <td><c:out value="${String.format('%.2f', resp.y())}"/></td>
+                        <td><c:out value="${String.format('%.2f', resp.r())}"/></td>
+                        <td><c:out value="${resp.isInArea() ? 'yes' : 'no'}"/></td>
+                        <td><c:out value="${TimeFormatter.formatExecutionTime(resp.executionTimeNs())}"/></td>
+                    </tr>
+                </c:forEach>
+            </c:if>
         </table>
     </div>
     <div id="input-space-container">

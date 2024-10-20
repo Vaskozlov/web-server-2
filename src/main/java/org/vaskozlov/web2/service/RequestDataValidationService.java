@@ -13,7 +13,7 @@ public class RequestDataValidationService {
     private static final String AVAILABLE_R_VALUES_STRING = "1.0, 1.5, 2.0, 2.5, 3.0";
 
     @Getter
-    private static final double[] AVAILABLE_R_VALUES = Arrays.stream(AVAILABLE_R_VALUES_STRING.split(", "))
+    private static final double[] availableRValues = Arrays.stream(AVAILABLE_R_VALUES_STRING.split(", "))
             .mapToDouble(Double::parseDouble)
             .toArray();
 
@@ -64,7 +64,7 @@ public class RequestDataValidationService {
         final double yValue = yResult.getValue();
         final double rValue = rResult.getValue();
 
-        for (double rVal : AVAILABLE_R_VALUES) {
+        for (double rVal : availableRValues) {
             if (Math.abs(rValue - rVal) <= DOUBLE_COMPARISON_ERROR) {
                 return Result.success(new RequestParameters(xValue, yValue, rValue));
             }
