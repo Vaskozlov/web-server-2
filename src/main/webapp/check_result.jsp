@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
 <%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -32,11 +33,11 @@
             </tr>
             <jsp:useBean id="responseResult" scope="request" class="org.vaskozlov.web2.lib.ResponseResult"/>
             <tr>
-                <td><c:out value="${String.format('%.2f', responseResult.x())}"/></td>
-                <td><c:out value="${String.format('%.2f', responseResult.y())}"/></td>
-                <td><c:out value="${String.format('%.2f', responseResult.r())}"/></td>
-                <td><c:out value="${responseResult.isInArea() ? 'yes' : 'no'}"/></td>
-                <td><c:out value="${TimeFormatter.formatExecutionTime(responseResult.executionTimeNs())}"/></td>
+                <td><f:formatNumber value="${responseResult.x}" type="number" maxFractionDigits="2"/></td>
+                <td><f:formatNumber value="${responseResult.y}" type="number" maxFractionDigits="2"/></td>
+                <td><f:formatNumber value="${responseResult.r}" type="number" maxFractionDigits="2"/></td>
+                <td><c:out value="${responseResult.inArea ? 'yes' : 'no'}"/></td>
+                <td><c:out value="${TimeFormatter.formatExecutionTime(responseResult.executionTimeNs)}"/></td>
             </tr>
         </table>
     </div>

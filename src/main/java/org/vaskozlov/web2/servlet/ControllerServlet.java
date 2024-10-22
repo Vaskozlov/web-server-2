@@ -24,7 +24,7 @@ public class ControllerServlet extends HttpServlet {
         Locale.setDefault(Locale.ENGLISH); // Афанас предпочитает запятые в дробях...
 
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
-            getServletContext().setAttribute("responses", new ArrayList<>());
+            getServletContext().setAttribute("responseResults", new ArrayList<>());
         }
 
         areaCheckServlet.init(config);
@@ -66,7 +66,7 @@ public class ControllerServlet extends HttpServlet {
 
     private void removeResponsesFromContext() {
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
-            ArrayList<?> responses = (ArrayList<?>) getServletContext().getAttribute("responses");
+            ArrayList<?> responses = (ArrayList<?>) getServletContext().getAttribute("responseResults");
             responses.clear();
         }
     }

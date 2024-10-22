@@ -1,8 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
+<%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
-<%@ page import="org.vaskozlov.web2.service.ContextSynchronizationService" %>
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="ru">
@@ -22,19 +20,17 @@
             <tr>
                 <jsp:include page="standart_table_header.jsp"/>
             </tr>
-            <jsp:useBean id="responses" scope="application"
+            <jsp:useBean id="responseResults" scope="application"
                          type="java.util.List<org.vaskozlov.web2.lib.ResponseResult>"/>
-            <c:if test="${responses != null}">
-                <c:forEach var="resp" items="${responses}">
-                    <tr>
-                        <td><c:out value="${String.format('%.2f', resp.x())}"/></td>
-                        <td><c:out value="${String.format('%.2f', resp.y())}"/></td>
-                        <td><c:out value="${String.format('%.2f', resp.r())}"/></td>
-                        <td><c:out value="${resp.isInArea() ? 'yes' : 'no'}"/></td>
-                        <td><c:out value="${TimeFormatter.formatExecutionTime(resp.executionTimeNs())}"/></td>
-                    </tr>
-                </c:forEach>
-            </c:if>
+            <c:forEach var="result" items="${responseResults}">
+                <tr>
+                    <td><f:formatNumber value="${result.x}" type="number" maxFractionDigits="2"/></td>
+                    <td><f:formatNumber value="${result.y}" type="number" maxFractionDigits="2"/></td>
+                    <td><f:formatNumber value="${result.r}" type="number" maxFractionDigits="2"/></td>
+                    <td><c:out value="${result.inArea ? 'yes' : 'no'}"/></td>
+                    <td><c:out value="${TimeFormatter.formatExecutionTime(result.executionTimeNs)}"/></td>
+                </tr>
+            </c:forEach>
         </table>
     </div>
     <div id="input-space-container">

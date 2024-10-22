@@ -74,7 +74,7 @@ public class AreaCheckServlet extends HttpServlet {
 
     private static void saveResultInContext(ServletContext context, ResponseResult currentResult) {
         try (var ignored = ContextSynchronizationService.applyWriteLock()) {
-            ((List<ResponseResult>) context.getAttribute("responses")).add(currentResult);
+            ((List<ResponseResult>) context.getAttribute("responseResults")).add(currentResult);
         }
     }
 }
