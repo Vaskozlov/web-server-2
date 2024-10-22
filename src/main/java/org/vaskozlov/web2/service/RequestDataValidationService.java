@@ -1,9 +1,9 @@
 package org.vaskozlov.web2.service;
 
 import lombok.Getter;
+import org.vaskozlov.web2.lib.RequestParameters;
 import org.vaskozlov.web2.lib.RequestValidationError;
 import org.vaskozlov.web2.lib.Result;
-import org.vaskozlov.web2.lib.RequestParameters;
 
 import java.util.Arrays;
 
