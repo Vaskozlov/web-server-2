@@ -1,8 +1,3 @@
-export function getAllCheckboxesByClass(class_name: string): HTMLInputElement[] {
-    const checkboxes = document.querySelectorAll(`input[type="checkbox"].${class_name}`);
-    return Array.from(checkboxes) as HTMLInputElement[];
-}
-
 export function createUrlWithParameters(
     endpoint: string,
     params: { [key: string]: any },
@@ -16,3 +11,4 @@ export function createUrlWithParameters(
 
     return url.toString();
 }
+

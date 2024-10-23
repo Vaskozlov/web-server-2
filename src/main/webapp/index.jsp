@@ -13,12 +13,21 @@
 <body>
 <main>
     <div id="page-header">
-        <jsp:include page="standart_page_header.jsp"/>
+        <h1>
+            Лабораторная работа №2
+        </h1>
+        <h2>
+            Выполнил: Козлов Василий Сергеевич P3215, вариант 228
+        </h2>
     </div>
     <div id="results-table-container">
         <table class="result-table" id="area-check-results-table">
             <tr>
-                <jsp:include page="standart_table_header.jsp"/>
+                <th>x</th>
+                <th>y</th>
+                <th>r</th>
+                <th>is in area?</th>
+                <th>execution time</th>
             </tr>
             <jsp:useBean id="responseResults" scope="application"
                          type="java.util.List<org.vaskozlov.web2.lib.ResponseResult>"/>

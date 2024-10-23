@@ -6,8 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.vaskozlov.web2.lib.RequestValidationError;
 import org.vaskozlov.web2.service.ContextSynchronizationService;
-import org.vaskozlov.web2.service.ErrorPageWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class ControllerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
 
         final String path = request.getServletPath();
@@ -57,11 +57,15 @@ public class ControllerServlet extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
-        ErrorPageWriter.writeErrorPage(
-                "ControllerServlet",
-                "Invalid path for a delete request",
-                response.getWriter()
+        request.setAttribute(
+                "occurredError",
+                new RequestValidationError(
+                        "ControllerServlet",
+                        "Invalid path for a delete request"
+                )
         );
+
+        request.getRequestDispatcher("/error_page.jsp").forward(request, response);
     }
 
     private void removeResponsesFromContext() {

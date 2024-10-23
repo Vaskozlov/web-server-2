@@ -1,22 +1,44 @@
-import {testPoint} from "./point_tester.js";
 import {formSubmitionHandler} from "./form_sender.js"
-import {clear_button, getRCheckboxesSelectedValues, main_plot, point_check_table_manager} from "./page_elements.js";
+import {testPoint} from "./point_tester.js";
+import {
+    allXButtons,
+    clear_button,
+    getRSelectorValue,
+    main_plot,
+    point_check_table_manager,
+    r_selector
+} from "./page_elements.js";
 
-document.getElementById("main-form").onsubmit = formSubmitionHandler;
+let current_selected_x: string = "0";
+const errorSpan = document.getElementById("r_selector_error") as HTMLSpanElement;
+
+document.getElementById("main-form").onsubmit = async (ev) =>
+    formSubmitionHandler(ev, current_selected_x);
 
 window.onload = () => {
     main_plot.setOnClickFunction(drawPointsOnPlotClick);
     drawPointsFromTable();
+    allXButtons.forEach(button => button.onclick = () => onXButtonClick(button));
+    onXButtonClick(allXButtons[4]);
 }
 
-clear_button.onclick = async (_: Event) => {
-    try {
-        await clearTable();
-    } catch (e) {
-        alert("Failed to clear the table");
-        console.log(e.message);
-        console.log(e.stack);
+r_selector.onchange = () => {
+    const rValue = getRSelectorValue().getValue();
+
+    if (Number.isNaN(rValue)) {
+        errorSpan.style.display = "inline";
+    } else {
+        errorSpan.style.display = "none";
+        main_plot.redrawPoints(rValue);
     }
+}
+
+clear_button.onclick = clearTable;
+
+function onXButtonClick(button: HTMLButtonElement) {
+    current_selected_x = button.value;
+    allXButtons.forEach(button => button.style.backgroundColor = "white");
+    button.style.backgroundColor = "green";
 }
 
 function drawPointsFromTable() {
@@ -28,9 +50,16 @@ function drawPointsFromTable() {
 }
 
 async function drawPointsOnPlotClick(x: number, y: number) {
-    for (const r of getRCheckboxesSelectedValues()) {
-        await testPoint(x * r, y * r, r);
+    const r = getRSelectorValue().getValue();
+    const errorSpan = document.getElementById("r_selector_error") as HTMLSpanElement;
+
+    if (Number.isNaN(r)) {
+        errorSpan.style.display = "inline";
+        return;
     }
+
+    errorSpan.style.display = "none";
+    await testPoint(x * r, y * r, r);
 }
 
 async function clearTable() {

@@ -71,6 +71,7 @@ export class Plot {
     }
 
     public drawPoint(x: number, y: number, r: number, color: string): void {
+        console.log(x, y, r, color);
         this.created_points.push(
             this.board.create('point', [x / r, y / r], {
                 size: 3.5,
@@ -81,8 +82,30 @@ export class Plot {
                 highlight: true,
                 showInfobox: true,
                 infoboxDigits: 2,
-                radius: r
+                radius: r,
             }));
+    }
+
+    public redrawPoints(new_r: number) {
+
+        const points_copy = this.created_points.slice();
+        this.created_points.length = 0;
+
+        this.board.suspendUpdate();
+
+        for (const point of points_copy) {
+            this.board.removeObject(point);
+            const [_, x, y] = point.coords.usrCoords;
+
+            this.drawPoint(
+                x * point.visProp.radius,
+                y * point.visProp.radius,
+                new_r,
+                point.visProp.fillcolor
+            );
+        }
+
+        this.board.unsuspendUpdate();
     }
 
     public removeAllPoints(): void {

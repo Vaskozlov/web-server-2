@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="org.vaskozlov.web2.lib.ResponseResult" %>
 <%@ page import="org.vaskozlov.web2.lib.TimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -10,14 +9,15 @@
     <link href="<%=request.getContextPath()%>/resources/CSS/styles.css" rel="stylesheet">
     <title>Lab2 webpage</title>
 </head>
-<%
-    final ResponseResult lastResponse = (ResponseResult) request.getAttribute("responseResult");
-    response.setStatus(200 + (lastResponse.isInArea() ? 0 : 1));
-%>
 <body>
 <main>
     <div id="page-header">
-        <jsp:include page="standart_page_header.jsp"/>
+        <h1>
+            Лабораторная работа №2
+        </h1>
+        <h2>
+            Выполнил: Козлов Василий Сергеевич P3215, вариант 228
+        </h2>
         <h3>
             Страница для проверки результата попадания
         </h3>

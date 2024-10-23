@@ -2,7 +2,7 @@ import {createUrlWithParameters} from "./lib/query.js";
 import {main_plot, point_check_table_manager} from "./page_elements.js";
 
 const dom_parser = new DOMParser();
-const status_code_in_case_point_is_in_area = 200;
+const STATUS_CODE_IN_CASE_POINT_IS_IN_AREA = 200;
 
 export async function testPoint(x: number, y: number, r: number) {
     const url = createUrlWithParameters('./check', {x, y, r});
@@ -20,7 +20,7 @@ export async function testPoint(x: number, y: number, r: number) {
     }
 
     await addNewRowToTable(response);
-    drawNewPoint(x, y, r, response.status === status_code_in_case_point_is_in_area);
+    drawNewPoint(x, y, r, response.status === STATUS_CODE_IN_CASE_POINT_IS_IN_AREA);
 }
 
 function drawNewPoint(x: number, y: number, r: number, is_in_area: boolean) {

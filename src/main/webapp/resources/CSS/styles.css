@@ -96,3 +96,7 @@ div#results-table-container .result-table tbody tr.active-row {
     width: 100%;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
+
+#submit_button, #clear_button {
+    margin-top: 10px;
+}

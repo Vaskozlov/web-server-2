@@ -10,10 +10,10 @@ import java.util.Arrays;
 public class RequestDataValidationService {
     private static final double DOUBLE_COMPARISON_ERROR = 1e-9;
 
-    private static final String AVAILABLE_R_VALUES_STRING = "1.0, 1.5, 2.0, 2.5, 3.0";
+    private static final String availableRValuesAsString = "1.0, 1.5, 2.0, 2.5, 3.0";
 
     @Getter
-    private static final double[] availableRValues = Arrays.stream(AVAILABLE_R_VALUES_STRING.split(", "))
+    private static final double[] availableRValues = Arrays.stream(availableRValuesAsString.split(", "))
             .mapToDouble(Double::parseDouble)
             .toArray();
 
@@ -72,7 +72,7 @@ public class RequestDataValidationService {
 
         return Result.error(new RequestValidationError(
                 "r",
-                "r must be in [%s]".formatted(AVAILABLE_R_VALUES_STRING)
+                "r must be in [%s]".formatted(availableRValuesAsString)
         ));
     }
 }

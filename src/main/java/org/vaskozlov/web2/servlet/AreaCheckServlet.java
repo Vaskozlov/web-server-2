@@ -12,11 +12,11 @@ import org.vaskozlov.web2.lib.ResponseResult;
 import org.vaskozlov.web2.lib.Result;
 import org.vaskozlov.web2.service.AreaCheckService;
 import org.vaskozlov.web2.service.ContextSynchronizationService;
-import org.vaskozlov.web2.service.ErrorPageWriter;
 import org.vaskozlov.web2.service.RequestDataValidationService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 @WebServlet(asyncSupported = true)
 public class AreaCheckServlet extends HttpServlet {
@@ -26,14 +26,14 @@ public class AreaCheckServlet extends HttpServlet {
         final var requestParameters = getParametersFromRequest(request);
 
         if (requestParameters.isError()) {
-            var validationError = requestParameters.getError();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
-            ErrorPageWriter.writeErrorPage(
-                    validationError.component(),
-                    validationError.message(),
-                    response.getWriter()
+            request.setAttribute(
+                    "occurredError",
+                    requestParameters.getError()
             );
+
+            request.getRequestDispatcher("/error_page.jsp").forward(request, response);
             return;
         }
 
@@ -45,6 +45,7 @@ public class AreaCheckServlet extends HttpServlet {
         saveResultInContext(getServletContext(), responseResult);
         request.setAttribute("responseResult", responseResult);
 
+        response.setStatus(200 + (responseResult.isInArea() ? 0 : 1));
         request.getRequestDispatcher("/check_result.jsp").forward(request, response);
     }
 
